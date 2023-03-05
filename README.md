@@ -1,8 +1,10 @@
 
-编译步骤
-make all 编译出kernel文件
+环境搭建:
+1、下载bochs-2.6.8 进行安装
+2、讲runkernel克隆下来
 
-make install 将kernel文件安装进硬盘hd80M.img中
+运行
+1、到runkernel目录下
+2、执行sudo make all
 
-执行su 命令进入root用户, 并到runkernel/bochs目录下执行bochs -f bochsrc.disk命令启动bochs即可
 
