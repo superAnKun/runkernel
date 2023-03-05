@@ -52,6 +52,8 @@ SELECTOR_VIDEO equ  (0x0005 << 3) + TI_GDT + RPL0
 extern main
 global gdt_entry
 
+section .text
+[bits 32]
 gdt_entry:
 ; 重新定义选择子和描述符 根据操作系统真相还原来定义
     ;关闭中断
@@ -86,6 +88,7 @@ halt_step:
     halt
     jmp halt_step
 
+section .data
 GDT_START:
 ;knull_dsc: dq 0
 ;kcode_dsc: dq 0x00cf9e000000ffff

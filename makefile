@@ -40,14 +40,19 @@ $(BUILD_DIR)/main.o: $(SRC_DIR)/main.c $(SRC_DIR)/stdio.h $(SRC_DIR)/print.h $(S
 $(BUILD_DIR)/runkernel.bin: $(OBJS)
 	$(LD) $(LDFLAGS) $^ -o $@
 
-$(BUILD_DIR):
+build_dir:
 	mkdir build
 
-all: $(BUILD_DIR) $(BUILD_DIR)/runkernel.bin
+build: build_dir $(BUILD_DIR)/runkernel.bin
 
 install:
-	sudo $(SCRIPT_DIR)/format_hd.sh $(BUILD_DIR)/runkernel.bin ./grub.cfg ./grub $(BOCHS_DIR) $(MOUNT_DIR)
+	$(SCRIPT_DIR)/format_hd.sh $(BUILD_DIR)/runkernel.bin ./grub.cfg ./grub $(BOCHS_DIR) $(MOUNT_DIR)
+run:
+	bochs -f ./bochs/bochsrc.disk
+
+all: build install run
 
 clean:
 	rm -rf $(BUILD_DIR)
-.PHONY: runkernel.bin clean install
+	rm -rf hd80M.img
+.PHONY: runkernel.bin clean install run

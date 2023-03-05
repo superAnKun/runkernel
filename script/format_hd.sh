@@ -3,7 +3,7 @@ runOS=$1
 grubCfg=$2
 grub=$3
 bochs_dir=$4
-hd_img=$bochs_dir/hd80M.img
+hd_img=hd80M.img
 mountdir=$5
 echo $hd_img
 
@@ -21,7 +21,8 @@ if [[ -f $hd_img ]]; then
 fi
 
 echo "create $hd_img"
-bximage -hd -mode="flat" -size=80 -q $hd_img
+#bximage -hd -mode="flat" -size=80 -q $hd_img
+bximage -hd=80 -mode=create -q $hd_img
 
 #给新创建的硬盘创建分区
 expect<<-EOF
