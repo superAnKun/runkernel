@@ -49,6 +49,9 @@ SELECTOR_DATA_K  equ  (0x0003 << 3) + TI_GDT + RPL0
 SELECTOR_DATA_U  equ  (0x0004 << 3) + TI_GDT + RPL3
 SELECTOR_VIDEO equ  (0x0005 << 3) + TI_GDT + RPL0
 
+__PAGE_OFFSET equ (0xC0000000)
+
+
 extern main
 global gdt_entry
 
@@ -81,7 +84,21 @@ runkel:
     xor esi, esi
     xor ebp, ebp
     xor esp, esp
-    mov esp, 0x9000
+    mov esp, 0x1000
+
+    mov edi, (pg0 - __PAGE_OFFSET)
+    mov eax, 7
+page_table0:  ;生成两个页表,一个页表映射4M内存 共8M物理内存被映射
+    ;stosl
+    mov [edi], eax
+    add edi, 4
+    add eax, 0x1000
+    cmp edi, (empty_zero_page - __PAGE_OFFSET)
+    jne page_table0
+
+    ;填充页目录表
+    mov edi, swaper_pg_dir
+    
     call main
 
 halt_step:
@@ -89,6 +106,13 @@ halt_step:
     jmp halt_step
 
 section .data
+
+section .data.pgdir
+swapper_pg_dir equ 0x100000
+pg0 equ 0x101000
+pg1 equ 0x102000
+empty_zero_page equ 0x103000
+
 GDT_START:
 ;knull_dsc: dq 0
 ;kcode_dsc: dq 0x00cf9e000000ffff
@@ -113,8 +137,4 @@ GDT_END:
 GDT_PTR:
 GDTLEN  dw GDT_END-GDT_START-1
 GDTBASE dd GDT_START
-
-
-
-
 
